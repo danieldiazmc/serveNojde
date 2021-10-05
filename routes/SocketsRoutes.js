@@ -23,9 +23,9 @@ class Sockets {
             });
 
 
-            socket.on('new-message-user', (message) => {  
-                userChats.addMessageFromUser(message).then( res => {
-                    socket.emit('new-message-user', {text:message , emisor:'user'});
+            socket.on('new-message-user', (body) => {  
+                userChats.addMessageFromUser(body).then( res => {
+                    socket.emit('new-message-user', {text:body.message , emisor:'user'});
                 });
             });
 

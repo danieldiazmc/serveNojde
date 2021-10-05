@@ -19,27 +19,21 @@ class UserChat {
         return messages;
     }
 
-
-
     async findUserChat(body){
         let {id} = body;
-        const sUserChat = await UserChatSchema.findById(id);
-        console.log(sUserChat);
+        const sUserChat = await UserChatSchema.findById(id);        
         if ( sUserChat ) {
-            this.id = id;
+            this.id = _id;
             this.messages = sUserChat.messages;
             this.name = sUserChat.name;
-        }
-        
+        }        
     }
 
-    async addMessageFromUser(message){
-
-
+    async addMessageFromUser(body){
+        let {message,id} = body;
         let objMessages = { text:message , emisor:'user' };
-console.log(objMessages);
         const test = UserChatSchema.findByIdAndUpdate(
-            { _id: this.id }, 
+            { _id: id }, 
             { $push: { messages: objMessages  } }
             ,function (error, success) {
                 if (error) {
@@ -49,10 +43,7 @@ console.log(objMessages);
                 }
             }
         );
-
-        this.messages.push(objMessages);
-
-       
+        this.messages.push(objMessages);       
     }
 
 }
