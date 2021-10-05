@@ -1,0 +1,12 @@
+- <Name> Modelo          --> /models
+- Log <Name> Modelo      --> /models/logs
+- ADD Model and Log      --> /models/index.js
+
+- [config] path-routes   --> /config
+- <Name> Routes          --> /routes
+- ADD Routes             --> /routes/index.js
+
+- db-validator- <name>   --> /helpers
+
+- <Name> Controller      --> /controllers
+- ADD Controller         --> /controller/index.js
