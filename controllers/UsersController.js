@@ -1,9 +1,7 @@
 const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
 
-const { UserSchema } = require('../schemes');
-
-const { userHandler } = require('../handlers');
+const { UserSchema,UserChatSchema } = require('../schemes');
 
 const { types,
     customResponse } = require('../helpers'); 
@@ -74,9 +72,37 @@ const usersDelete = async(req, res = response) => {
 }
 
 // [ POST ] [ USERCHAT ]
-const usersRegisterChat = async(req, res = response) => {
-    let payload = { type:types.s200, request: await userHandler.usersRegisterChat(req,res) };
-    customResponse( payload, res );
+const usersRegisterChat = async(req, res ) => {
+
+
+    let {watson,watsonID} = req.app.locals;
+    const { name, ip } = req.body;
+    // let tres = await watson.message({
+    //     assistantId: watsonID,
+    //     sessionId: '{session_id}',
+    //     input: {
+    //       'message_type': 'text',
+    //       'text': 'Hello'
+    //       }
+    //     })
+    // console.log(tres);
+    const {result:{output:{generic:messages}}} = await watson.messageStateless({assistantId:watsonID,input:{messageType: 'text',text: ''}});
+
+    const userChat = new UserChatSchema( { name,ip,messages } );
+
+    let data = null;
+
+    await Promise.all([userChat.save()])
+    .then(results => {
+        data = { results: results[0] };
+    })
+    .catch(err => {
+        let payload = { type:types.e401, request:err } ;
+        customResponse( payload, res );
+    });         
+    
+    res.status(201).json(data);
+
 }
 
 

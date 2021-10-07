@@ -33,12 +33,23 @@ class Server {
         appRoutes(this.app);
 
         // Inicializar sockets
-        this.sockets = new Sockets( this.io, assistant );        
+        this.sockets = new Sockets( this.io, assistant, this.app );     
+        
+        this.externals();
 
     }
 
     async conectarDB() {
         await dbConnection();
+    }
+
+    async externals(){
+        let {watson,assistantId,session_id} = await assistant();
+        this.app.locals={
+            watsonSDK:watson,
+            watsonAssistantID:assistantId,
+            watsonSessionID:session_id
+        }
     }
 
     middlewares() {
@@ -49,6 +60,8 @@ class Server {
         // Extended: https://swagger.io/specification/#infoObject
         const { swagger } = pathRoutes;
         this.app.use(swagger, swaggerUi.serve, swaggerUi.setup( swaggerConf(),options )); 
+        
+        
     }
 
     execute() {

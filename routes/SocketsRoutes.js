@@ -3,34 +3,53 @@ const { UserChat } = require('../models/userChat');
 const userChats = new UserChat();
 class Sockets {
 
-    constructor( io, assistant  ) {
+    constructor( io, assistant, app  ) {
         this.io = io;
         this.assistant = assistant;
         this.socketEvents();
+        this.app = app;
+        this.userChats = new UserChat(app);
     }
     
     socketEvents() {
         // On connection
 
         this.io.on('connect', ( socket ) => {
+            console.log('a user CONNECT!');
+            
+            socket.on('new-message-user', body => { 
 
-            socket.on('find-userchat', body => {  
-                userChats.findUserChat(body).then( resp => {
-                    if(userChats.messages.length > 0){
-                        socket.emit('find-userchat', {messages:userChats.messages})
-                    }
-                });                              
+                if( body.message.substring(13,-1) == 'mercadolibre:'){
+                    console.log('entra');
+                    this.userChats.addMessageFromML(body).then( (resp) =>{
+                        console.log(resp);
+                        socket.emit('new-message-ml', resp); 
+                    }); 
+                }
+                else{
+                    this.userChats.addMessageFromUser(body).then( (resp) =>{
+                        socket.emit('new-message-user', resp); 
+                    }); 
+                }
             });
 
-
-            socket.on('new-message-user', (body) => {  
-                userChats.addMessageFromUser(body).then( res => {
-                    socket.emit('new-message-user', {text:body.message , emisor:'user'});
-                });
-            });
-
-            socket.on('disconnect', () => {
+            
+            
+            socket.on('cerrar-session', () => {
+                let {watsonSDK,watsonAssistantID,watsonSessionID} = this.app.locals;
+                watsonSDK.deleteSession({
+                    assistantId: watsonAssistantID,
+                    sessionId: watsonSessionID,
+                  })
                 console.log('a user disconnected!');
+            });
+
+            socket.on('iniciar-session', () => {
+
+                this.userChats.iniciarSession().then( (resp) =>{
+                    console.log('a user connected!');
+                });
+
             });
 
             /*

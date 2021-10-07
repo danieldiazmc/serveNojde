@@ -1,5 +1,6 @@
 const { RoleSchema,
-    UserSchema} = require('../schemes');
+        UserSchema,
+        UserChatSchema} = require('../schemes');
 
 const isValidRol = async(rol = '') => {
 
@@ -27,11 +28,21 @@ if ( !existUser ) {
 }
 }
 
+const isExistUserChatById= async( id ) => {
+
+    // Verificar si el correo existe
+    const existUser = await UserChatSchema.findById(id);
+    if ( !existUser ) {
+        throw new Error(`El id no existe ${ id }`);
+    }
+}
+
 
 
 module.exports = {
 isValidRol,
 isExistEmail,
-isExistUserById
+isExistUserById,
+isExistUserChatById
 }
 

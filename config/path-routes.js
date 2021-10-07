@@ -33,7 +33,6 @@ const appRoutes = (app) => {
         app.disable('x-powered-by');
         app.use( cors() );
         app.use( express.json() );
-        
         app.use( pathRoutes.auth, require('../routes/AuthRoutes'));
         app.use( pathRoutes.conditions, require('../routes/ConditionsRoutes'));
         app.use( pathRoutes.locations, require('../routes/LocationsRoutes'));

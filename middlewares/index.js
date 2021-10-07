@@ -6,7 +6,8 @@ const validateRols = require('./validateRols');
 const validateLocation = require('./validateLocation');
 const validateTracking = require('./validateTracking');
 const validateConditions = require('./validateConditions');
-const validateUser = require('./validateUser');
+const validateUserChat = require('./validateUserChat');
+
 
 module.exports = {
     ...validateFields,
@@ -15,5 +16,5 @@ module.exports = {
     ...validateLocation,
     ...validateTracking,
     ...validateConditions,
-    ...validateUser
+    ...validateUserChat
 }

@@ -1,6 +1,30 @@
 
 const { Schema, model } = require('mongoose');
 
+const _ProductsSchema = new Schema({
+    thumbnail: {
+        type:String,
+        require:true
+    },
+    permalink: {
+        type:String,
+        require:true
+    },
+    title: {
+        type:String,
+        require:true
+    },
+    price: {
+        type:String,
+        require:true
+    },
+    currency_id: {
+        type:String,
+        require:true
+    }
+},{ _id : false });
+            
+
 const _MessageSchema = new Schema({
     text: {
         type:String,
@@ -9,7 +33,10 @@ const _MessageSchema = new Schema({
     emisor: {
         type:String,
         require:true
-    }
+    },
+    products:[ 
+        _ProductsSchema
+    ],
 },{ _id : false });
 
 
@@ -17,11 +44,12 @@ const UserChatSchema = Schema(
     {
         name: {
             type: String,
-            required: [true, 'El nombre es obligatorio']
+            required: [true, 'El nombre es obligatorio'],
+            unique: true
         },
         ip: {
             type: String,
-            unique: true
+            required: true,            
         },
         messages: [
             _MessageSchema
